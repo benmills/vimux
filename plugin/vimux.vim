@@ -41,12 +41,16 @@ command -bar VimuxClearTerminalScreen :call VimuxClearTerminalScreen()
 command -bar VimuxClearRunnerHistory :call VimuxClearRunnerHistory()
 command -bar VimuxTogglePane :call VimuxTogglePane()
 
-if VimuxOption('VimuxCloseOnExit')
-    augroup VimuxAutocloseCommands
-        au!
-        autocmd VimLeave * call VimuxCloseRunner()
-    augroup END
-endif
+function! s:autoclose() abort
+  if VimuxOption('VimuxCloseOnExit')
+    call VimuxCloseRunner()
+  endif
+endfunction
+
+augroup VimuxAutocloseCommands
+  au!
+  autocmd VimLeave * call s:autoclose()
+augroup END
 
 function! VimuxRunCommandInDir(command, useFile) abort
   let l:file = ''
